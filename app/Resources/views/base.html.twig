@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Im index{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
+            <link rel="stylesheet" href="{{ asset('css/styles.css') }}" />
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <header class="header">
+        <div class="col-md-offset-10">
+            <ul class="nav nav-pills">
+                {% if app.user %}
+                    <li role="presentation" class="navbar_button"><a href="#"><strong>Profile</strong></a></li>
+                    <li role="presentation" class="navbar_button"><a href="{{ path('security_logout') }}"><strong>Logout</strong></a></li>
+                {% else %}
+                    <li role="presentation" class="navbar_button"><a href="{{ path('user_register') }}"><strong>Register</strong></a></li>
+                    <li role="presentation" class="navbar_button"><a href="{{ path('security_login') }}"><strong>Login</strong></a></li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </header>
+    <body class="body">
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+            <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>
