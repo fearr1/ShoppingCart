@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if cart is not empty %}
+    <h1 class="text-center">Your cart </h1>
+    <div class="container body-content">
+        <div class="row">
+            {% for product in cart %}
+                <div class="col-xs-3 well article">
+                    <div>
+                        <p>Name: {{ product.getName }}</p>
+                    </div>
+                    <div>
+                        <p>Price: {{ product.getPrice }}$</p>
+                    </div>
+                    <div>
+                        <p>Description: {{ product.getDescription }}</p>
+                    </div>
+                    <div>
+                        <small>Quantity: {{ product.getQuantity }}</small>
+                    </div>
+                    <a class="btn btn-sm btn-danger col-sm-offset-5" href="{{ path('remove_from_cart', {id: product.id}) }}">Remove</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+        {% else %}
+        <h1 class="text-center">Your cart is empty :)</h1>
+    {% endif %}
+{% endblock %}

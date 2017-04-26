@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -13,6 +14,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+
     /**
      * @var int
      *
@@ -78,26 +80,6 @@ class User implements UserInterface
      */
     private $cash;
 
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="cart", type="array", nullable=true)
-     */
-    private $cart;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="products", type="array", nullable=true)
-     */
-    private $products;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="role", type="string", length=255)
-     */
-    private $role;
 
     /**
      * @var \DateTime
@@ -106,10 +88,22 @@ class User implements UserInterface
      */
     private $registeredOn;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Product", mappedBy="author")
+     */
+    private $products;
 
     /**
-     * Get id
+     * @var array
      *
+     * @ORM\Column(name="cart", type="array")
+     */
+    private $cart;
+
+
+    /**
      * @return int
      */
     public function getId()
@@ -118,22 +112,6 @@ class User implements UserInterface
     }
 
     /**
-     * Set username
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Get username
-     *
      * @return string
      */
     public function getUsername()
@@ -142,22 +120,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return User
+     * @param string $username
      */
-    public function setEmail($email)
+    public function setUsername(string $username)
     {
-        $this->email = $email;
-
-        return $this;
+        $this->username = $username;
     }
 
     /**
-     * Get email
-     *
      * @return string
      */
     public function getEmail()
@@ -166,22 +136,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return User
+     * @param string $email
      */
-    public function setPassword($password)
+    public function setEmail(string $email)
     {
-        $this->password = $password;
-
-        return $this;
+        $this->email = $email;
     }
 
     /**
-     * Get password
-     *
      * @return string
      */
     public function getPassword()
@@ -190,22 +152,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return User
+     * @param string $password
      */
-    public function setName($name)
+    public function setPassword(string $password)
     {
-        $this->name = $name;
-
-        return $this;
+        $this->password = $password;
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -214,22 +168,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set lastName
-     *
-     * @param string $lastName
-     *
-     * @return User
+     * @param string $name
      */
-    public function setLastName($lastName)
+    public function setName(string $name)
     {
-        $this->lastName = $lastName;
-
-        return $this;
+        $this->name = $name;
     }
 
     /**
-     * Get lastName
-     *
      * @return string
      */
     public function getLastName()
@@ -238,22 +184,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set age
-     *
-     * @param integer $age
-     *
-     * @return User
+     * @param string $lastName
      */
-    public function setAge($age)
+    public function setLastName(string $lastName)
     {
-        $this->age = $age;
-
-        return $this;
+        $this->lastName = $lastName;
     }
 
     /**
-     * Get age
-     *
      * @return int
      */
     public function getAge()
@@ -262,22 +200,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set address
-     *
-     * @param string $address
-     *
-     * @return User
+     * @param int $age
      */
-    public function setAddress($address)
+    public function setAge(int $age)
     {
-        $this->address = $address;
-
-        return $this;
+        $this->age = $age;
     }
 
     /**
-     * Get address
-     *
      * @return string
      */
     public function getAddress()
@@ -286,22 +216,14 @@ class User implements UserInterface
     }
 
     /**
-     * Set cash
-     *
-     * @param integer $cash
-     *
-     * @return User
+     * @param string $address
      */
-    public function setCash($cash)
+    public function setAddress(string $address)
     {
-        $this->cash = $cash;
-
-        return $this;
+        $this->address = $address;
     }
 
     /**
-     * Get cash
-     *
      * @return int
      */
     public function getCash()
@@ -310,22 +232,38 @@ class User implements UserInterface
     }
 
     /**
-     * Set cart
-     *
-     * @param array $cart
-     *
-     * @return User
+     * @param int $cash
      */
-    public function setCart($cart)
+    public function setCash(int $cash)
     {
-        $this->cart = $cart;
-
-        return $this;
+        $this->cash = $cash;
     }
 
     /**
-     * Get cart
-     *
+     * @return \DateTime
+     */
+    public function getRegisteredOn()
+    {
+        return $this->registeredOn;
+    }
+
+    /**
+     * @param \DateTime $registeredOn
+     */
+    public function setRegisteredOn(\DateTime $registeredOn)
+    {
+        $this->registeredOn = $registeredOn;
+    }
+
+    /**
+     * @param Product $product
+     */
+    public function addToCart($product)
+    {
+        $this->cart[] = $product;
+    }
+
+    /**
      * @return array
      */
     public function getCart()
@@ -334,75 +272,28 @@ class User implements UserInterface
     }
 
     /**
-     * Set products
-     *
-     * @param array $products
-     *
-     * @return User
+     * @param Product $product
      */
-    public function setProducts($products)
+    public function removeFromCart(Product $product)
     {
-        $this->products = $products;
+        $cart = $this->getCart();
+        foreach($cart as $element)
+        {
+            if($element->getId() == $product->getId())
+            {
+                $product = $element;
+                $key = array_search($product, $cart, true);
+                unset($cart[$key]);
+                break;
+            }
+        }
 
-        return $this;
+        $this->setCart($cart);
     }
 
-    /**
-     * Get products
-     *
-     * @return array
-     */
-    public function getProducts()
+    public function setCart(array $cart)
     {
-        return $this->products;
-    }
-
-    /**
-     * Set role
-     *
-     * @param string $role
-     *
-     * @return User
-     */
-    public function setRole($role)
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * Get role
-     *
-     * @return string
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
-     * Set registeredOn
-     *
-     * @param \DateTime $registeredOn
-     *
-     * @return User
-     */
-    public function setRegisteredOn($registeredOn)
-    {
-        $this->registeredOn = $registeredOn;
-
-        return $this;
-    }
-
-    /**
-     * Get registeredOn
-     *
-     * @return \DateTime
-     */
-    public function getRegisteredOn()
-    {
-        return $this->registeredOn;
+        $this->cart = $cart;
     }
 
     /**
@@ -423,7 +314,7 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return ["ROLE_USER"];
     }
 
     /**
@@ -449,9 +340,29 @@ class User implements UserInterface
         // TODO: Implement eraseCredentials() method.
     }
 
+    public function addCreatedProduct(Product $product)
+    {
+        $this->products[] = $product;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
     public function __construct()
     {
-        $this->setRegisteredOn(new \DateTime('NOW'));
+        $this->setRegisteredOn(new \DateTime("NOW"));
+        $this->products = new ArrayCollection();
+        $this->cart = [];
+    }
+
+    public function __toString()
+    {
+        return $this->getUsername();
     }
 }
 

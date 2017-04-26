@@ -2,11 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Product;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -17,6 +19,9 @@ class UserController extends Controller
      */
     public function registerAction(Request $request)
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
         // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -30,7 +35,7 @@ class UserController extends Controller
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
-            $user->setRole("ROLE_USER");
+
 
             // 4) save the User!
             $em = $this->getDoctrine()->getManager();
@@ -48,4 +53,6 @@ class UserController extends Controller
             array('form' => $form->createView())
         );
     }
+
+
 }

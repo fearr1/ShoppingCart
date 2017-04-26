@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if products is not empty %}
+        <h1 class="text-center">Your products: </h1>
+        <div class="container body-content">
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-xs-3 well article">
+                        <div class="container">
+                            <p>Name: {{ product.getName }}</p>
+                        </div>
+                        <div class="container">
+                            <p>Price: {{ product.getPrice }}$</p>
+                        </div>
+                        <div class="container">
+                            <p>Description: {{ product.getDescription }}</p>
+                        </div>
+                        <div class="container">
+                            <p>Quantity: {{ product.getQuantity }}</p>
+                        </div>
+                        {% if product.isValid %}
+                            <a class="btn btn-sm btn-danger col-sm-offset-4"
+                               href="{{ path('stop_from_sell', {id: product.id}) }}">Stop selling!</a>
+                        {% else %}
+                            <a class="btn btn-sm btn-primary col-sm-offset-4"
+                               href="{{ path('put_for_sale', {id: product.id, token: token}) }}">Put for sale!</a>
+
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
