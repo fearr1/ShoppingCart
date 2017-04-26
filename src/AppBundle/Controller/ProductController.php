@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Product;
 use AppBundle\Entity\User;
 use AppBundle\Form\ProductType;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,7 +29,8 @@ class ProductController extends Controller
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
-
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -37,7 +40,18 @@ class ProductController extends Controller
             $user = $this->getUser();
             $product->setAuthor($user);
             $user->addCreatedProduct($product);
-            $em = $this->getDoctrine()->getManager();
+
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $product->getPicture();
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $file->move(
+                $this->getParameter('product_pictures'),
+                $fileName
+            );
+
+            $product->setPicture($fileName);
             $em->persist($product);
             $em->flush();
 
@@ -45,7 +59,8 @@ class ProductController extends Controller
         }
 
         return $this->render('product/create.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'categories' => $categories,
         ]);
     }
 

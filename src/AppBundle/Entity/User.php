@@ -102,6 +102,21 @@ class User implements UserInterface
      */
     private $cart;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role", inversedBy="users")
+     * @ORM\JoinTable(name="user_roles",
+     *     joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     * )
+     */
+    private $roles;
+
+    public function addRole(Role $role)
+    {
+        $roles[] = $role;
+    }
+
 
     /**
      * @return int
@@ -358,6 +373,7 @@ class User implements UserInterface
         $this->setRegisteredOn(new \DateTime("NOW"));
         $this->products = new ArrayCollection();
         $this->cart = [];
+        $this->cash = 3000;
     }
 
     public function __toString()

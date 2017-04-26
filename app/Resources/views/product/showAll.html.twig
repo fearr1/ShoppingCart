@@ -19,6 +19,11 @@
                         <div>
                             <small>Quantity: {{ product.getQuantity }}</small>
                         </div>
+                        {% if product.picture is not empty %}
+                        <div>
+                            <img src="{{ asset('uploads/product_pictures/' ~ product.picture) }}" style="max-width: 100px"/>
+                        </div>
+                        {% endif %}
                         <div>
                             <small>Author: {{ product.getAuthor }}</small>
                             {% if product.author != app.user %}

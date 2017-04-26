@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
@@ -70,6 +71,78 @@ class Product
      * @ORM\Column(name="is_valid", type="boolean")
      */
     private $valid;
+
+    /**
+     * @ORM\Column(name="picture", type="string")
+     * @Assert\NotBlank(message="Please, upload the product picture as a JPEG file.")
+     * @Assert\Image()
+     */
+    private $picture;
+
+    /**
+     * @var Category
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="products")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    private $category;
+
+    /**
+     * @var int
+     *
+     * @@ORM\Column(name="category_id", type="integer")
+     */
+    private $categoryId;
+
+    /**
+     * @param Category $category
+     *
+     * @return Product
+     */
+    public function setCategory(Category $category = null)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param int $categoryId
+     *
+     * @return Product
+     */
+    public function setCategoryId(int $categoryId)
+    {
+        $this->categoryId = $categoryId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
 
     /**
      * Get id
@@ -221,6 +294,11 @@ class Product
     public function isValid()
     {
         return $this->valid;
+    }
+
+    public function __construct()
+    {
+        $this->setIsValid(true);
     }
 }
 
