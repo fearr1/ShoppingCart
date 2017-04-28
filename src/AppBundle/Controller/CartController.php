@@ -3,20 +3,29 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Product;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CartController extends Controller
 {
     /**
      * @Route("/cart", name="show_cart")
+     * @param Request $request
+     * @return Response
      */
-    public function showCart()
+    public function showCart(Request $request)
     {
+        /**
+         * @var ArrayCollection|Product[]
+         */
         $cart = $this->getUser()->getCart();
+        $previousUrl = $request->headers->get('referer');
         return $this->render("cart/show.html.twig", [
-            'cart' => $cart
+            'cart' => $cart,
+            'previousUrl' => $previousUrl
         ]);
     }
 

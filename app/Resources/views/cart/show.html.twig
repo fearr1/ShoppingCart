@@ -1,30 +1,74 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if cart is not empty %}
-    <h1 class="text-center">Your cart </h1>
-    <div class="container body-content">
+    <div class="container">
         <div class="row">
-            {% for product in cart %}
-                <div class="col-xs-3 well article">
-                    <div>
-                        <p>Name: {{ product.getName }}</p>
+            <div class="col-xs-12">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <h5><span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</h5>
+                                </div>
+                                <div class="col-xs-2 col-xs-offset-4">
+                                    <a class="btn btn-primary btn-sm btn-block" href="{{ previousUrl }}">
+                                        <span class="glyphicon glyphicon-share-alt"></span> Continue shopping
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <p>Price: {{ product.getPrice }}$</p>
+                    <div class="panel-body">
+                        {% if cart is not empty %}
+                            {% for product in cart %}
+                                <div class="row">
+                                    <div class="col-xs-2"><img class="img-responsive"
+                                                               src="{{ asset('uploads/product_pictures/' ~ product.picture) }}">
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <h4 class="product-name"><strong>{{ product.name }}</strong></h4>
+                                        <h4>
+                                            <small>{{ product.description }}</small>
+                                        </h4>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="col-xs-6 text-right">
+                                            <h6><strong>$ {{ product.price }} <span class="text-muted">x</span></strong>
+                                            </h6>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <input type="text" class="form-control input-sm" value="1">
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <a class="btn btn-link btn-xs"
+                                               href="{{ path('remove_from_cart', {id: product.id}) }}">
+                                                <span class="glyphicon glyphicon-trash"> </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            {% endfor %}
+                        {% else %}
+                            <h2 class="text-center">Your cart is empty :)</h2>
+                        {% endif %}
+
                     </div>
-                    <div>
-                        <p>Description: {{ product.getDescription }}</p>
+                    <div class="panel-footer">
+                        <div class="row text-center">
+                            <div class="col-xs-9">
+                                <h4 class="text-right">Total <strong>$50.00</strong></h4>
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn btn-success btn-block">
+                                    Checkout
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <small>Quantity: {{ product.getQuantity }}</small>
-                    </div>
-                    <a class="btn btn-sm btn-danger col-sm-offset-5" href="{{ path('remove_from_cart', {id: product.id}) }}">Remove</a>
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
-        {% else %}
-        <h1 class="text-center">Your cart is empty :)</h1>
-    {% endif %}
 {% endblock %}

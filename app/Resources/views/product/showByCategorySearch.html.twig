@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">{{ count }} product(s) matched: {{ search }} in {{ category }}</h1>
+    <div class="container body-content">
+        <div class="row">
+            {% for product in products %}
+                {% if product.isValid %}
+                    <div class="col-xs-3 well article">
+                        <div>
+                            <p>Name: {{ product.getName }}</p>
+                        </div>
+                        <div>
+                            <p>Price: {{ product.getPrice }}$</p>
+                        </div>
+                        <div>
+                            <p>Description: {{ product.getDescription }}</p>
+                        </div>
+                        <div>
+                            <small>Quantity: {{ product.getQuantity }}</small>
+                        </div>
+                        {% if product.picture is not empty %}
+                            <div>
+                                <img src="{{ asset('uploads/product_pictures/' ~ product.picture) }}" style="max-width: 100px"/>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <small>Author: {{ product.getAuthor }}</small>
+                            {% if product.author != app.user %}
+                                <a class="btn btn-sm btn-success col-sm-offset-4"
+                                   href="{{ path('add_to_cart', {id: product.id}) }}">Add to cart</a>
+                            {% else %}
+                                <a class="btn btn-sm btn-danger col-sm-offset-4" href="{{ path('stop_from_sell', {id: product.id}) }}">Stop selling</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

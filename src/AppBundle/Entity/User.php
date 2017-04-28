@@ -114,7 +114,7 @@ class User implements UserInterface
 
     public function addRole(Role $role)
     {
-        $roles[] = $role;
+        $this->roles[] = $role;
     }
 
 
@@ -379,6 +379,12 @@ class User implements UserInterface
     public function __toString()
     {
         return $this->getUsername();
+
+    }
+
+    public function getCountCart()
+    {
+        return count($this->getCart());
     }
 }
 

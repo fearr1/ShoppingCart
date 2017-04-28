@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>{% block title %} art.me {% endblock %}</title>
+    <title>{% block title %} WasteYourMoney {% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/products-view.css') }}">
     {% endblock %}
-    <link rel="icon" type="image/x-icon" href="#"/>
+    <link rel="icon" type="image/x-icon" href="{{ asset('head_icon.png') }}"/>
 </head>
 
 <body style="background-color: whitesmoke" id="{% block body_id %}{% endblock %}">
@@ -16,10 +17,17 @@
 {% block header %}
     <header>
         <div class="container-fluid" style="background-color: whitesmoke">
-            <div class="container col-sm-offset-4" style="margin-top:7%; position: absolute; left: -40%">
-                <input type="text"  name="search" style="position: absolute;  right:20%;width:24.5%; height: 35px; font-size:13pt; margin-bottom: 5px">
-                <button type="submit" class="btn btn-md btn-primary col-sm-1 col-sm-offset-4" style="position: absolute; left: 48%; margin-bottom: 2%">Search</button>
-            </div>
+            <form method="GET" action="{{ path('search_action') }}">
+                <div class="container col-sm-offset-4" style="margin-top:6.5%; position: absolute; left: -40%">
+                    <input type="text" name="name"
+                           style="position: absolute;  right:20%;width:24.5%; height: 35px; font-size:13pt; margin-bottom: 5px">
+                    <button type="submit" class="btn btn-md btn-primary col-sm-1 col-sm-offset-4"
+                            style="position: absolute; left: 48%; margin-bottom: 2%">Search
+                    </button>
+                </div>
+                <a href="{{ path('search_by_category') }}" style="position: absolute; left: 39%; margin-top: 9.15%">Click
+                    here for category search!</a>
+            </form>
             <div style="background-color: whitesmoke" class="navbar-static-top" role="navigation">
                 <div class="container-fluid" style="margin-bottom:100px">
                     <div class="navbar-header">
@@ -41,11 +49,12 @@
                                 <li class="dropdown">
                                     <a href="" class=" dropdown-toggle" data-toggle="dropdown">
                                         <img src="{{ asset('user.svg') }}" style="width:18px">
-                                        <strong>My Profile</strong>
+                                        <strong>{{ app.user.name }}</strong>
                                         <span class="caret"></span></a>
                                     <ul class="nav dropdown-menu">
                                         <li>
-                                            <a href="{{ path('show_my_products') }}"><strong style="color: blue">My products</strong></a>
+                                            <a href="{{ path('show_my_products') }}"><strong style="color: blue">My
+                                                    products</strong></a>
                                         </li>
                                         <li>
                                             <a href="#"><strong style="color: blue">Link 1</strong></a>
@@ -59,7 +68,7 @@
                                 <li>
                                     <a href="{{ path('show_cart') }}">
                                         <img src="{{ asset('cart.png') }}" style="width:18px">
-                                        <strong>Cart</strong>
+                                        <strong>Cart ({{ app.user.getCountCart }})</strong>
                                     </a>
                                 </li>
                                 <li>
@@ -94,19 +103,16 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="{{ path('show_all_products') }}" class="navbar_button">
-                                <img src="#" style="width:18px">
                                 <strong>Show all products</strong>
                             </a>
                         </li>
                         <li>
                             <a href="#" class="navbar_button">
-                                <img src="#" style="width:18px">
                                 <strong>Link 1</strong>
                             </a>
                         </li>
                         <li>
                             <a href="#" class="navbar_button">
-                                <img src="#" style="width:18px">
                                 <strong>Link 2</strong>
                             </a>
                         </li>
@@ -133,7 +139,7 @@
     {% block footer %}
         <footer class="nav navbar-nav navbar-right">
             <div>
-                <p>&copy; 2016 - All rights reserved </p>
+                <p>&copy; 2017 - All rights reserved </p>
             </div>
         </footer>
     {% endblock %}
@@ -144,7 +150,7 @@
     <script src="{{ asset('js/jquery-2.2.4.min.js') }}"></script>
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
-    <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('js/product-view.js') }}"></script>
 {% endblock %}
 {% block imageViewer %}
 
