@@ -13,8 +13,7 @@ class SecurityController extends Controller
      */
     public function login()
     {
-        if($this->getUser())
-        {
+        if ($this->getUser()) {
             return $this->redirectToRoute("homepage");
         }
         return $this->render("security/login.html.twig");

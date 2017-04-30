@@ -13,6 +13,10 @@ security:
         database_users:
             entity: { class: AppBundle:User, property: username }
 
+    role_hierarchy:
+            ROLE_EDITOR:       ROLE_USER
+            ROLE_ADMIN:        ROLE_EDITOR
+
 # http://symfony.com/doc/current/book/security.html#firewalls-authentication
     firewalls:
         secured_area:
@@ -46,3 +50,4 @@ security:
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }
+         - { path: ^/editor, roles: ROLE_EDITOR }

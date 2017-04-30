@@ -83,7 +83,7 @@ class Role implements RoleInterface
      */
     public function getRole()
     {
-        // TODO: Implement getRole() method.
+        return $this->getName();
     }
 }
 

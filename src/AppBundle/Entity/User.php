@@ -91,14 +91,14 @@ class User implements UserInterface
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Product", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Product", mappedBy="author", cascade={"persist", "remove"})
      */
     private $products;
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="cart", type="array")
+     * @var Cart
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cart", inversedBy="user", cascade={"persist"})
+     * @ORM\JoinColumn(name="cart_id", referencedColumnName="id")
      */
     private $cart;
 
@@ -112,6 +112,9 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @param Role $role
+     */
     public function addRole(Role $role)
     {
         $this->roles[] = $role;
@@ -279,34 +282,15 @@ class User implements UserInterface
     }
 
     /**
-     * @return array
+     * @return object
      */
     public function getCart()
     {
         return $this->cart;
     }
 
-    /**
-     * @param Product $product
-     */
-    public function removeFromCart(Product $product)
-    {
-        $cart = $this->getCart();
-        foreach($cart as $element)
-        {
-            if($element->getId() == $product->getId())
-            {
-                $product = $element;
-                $key = array_search($product, $cart, true);
-                unset($cart[$key]);
-                break;
-            }
-        }
 
-        $this->setCart($cart);
-    }
-
-    public function setCart(array $cart)
+    public function setCart(Cart $cart)
     {
         $this->cart = $cart;
     }
@@ -329,7 +313,7 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return ["ROLE_USER"];
+        return $this->roles->toArray();
     }
 
     /**
@@ -365,15 +349,16 @@ class User implements UserInterface
      */
     public function getProducts()
     {
-        return $this->products;
+        return $this->products->toArray();
     }
 
     public function __construct()
     {
         $this->setRegisteredOn(new \DateTime("NOW"));
         $this->products = new ArrayCollection();
-        $this->cart = [];
         $this->cash = 3000;
+        $this->roles = new ArrayCollection();
+        $this->cart = new Cart();
     }
 
     public function __toString()
@@ -382,9 +367,51 @@ class User implements UserInterface
 
     }
 
-    public function getCountCart()
+
+    public function addCash(float $cash)
     {
-        return count($this->getCart());
+        $this->cash += $cash;
+    }
+
+    public function reduceCash(float $cash)
+    {
+        $this->cash -= $cash;
+    }
+
+    public function isInTheProducts(Product $product)
+    {
+        $products = $this->getProducts();
+        foreach ($products as $element) {
+            if ($product->getName() == $element->getName()) {
+                return $element;
+            }
+        }
+        return false;
+    }
+
+    public function emptyCart()
+    {
+        $this->setCart(new Cart());
+    }
+
+    public function isAuthor(Product $product)
+    {
+        if ($this == $product->getAuthor()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isEditor()
+    {
+        $roles = $this->getRoles();
+        if ("ROLE_EDITOR" == $roles[0]->getRole()) {
+            return true;
+        }
+        if ("ROLE_ADMIN" == $roles[0]->getRole()) {
+            return true;
+        }
+        return false;
     }
 }
 

@@ -46,10 +46,29 @@
                         <ul class="nav navbar-nav navbar-right" style="margin-top: 10px">
 
                             {% if app.user %}
+                                {% if app.user.isEditor %}
+                                    <li class="dropdown">
+                                        <a href="" class=" dropdown-toggle" data-toggle="dropdown">
+                                            <img src="{{ asset('addicon.png') }}" style="width:18px">
+                                            <strong>Add</strong>
+                                            <span class="caret"></span></a>
+                                        <ul class="nav dropdown-menu">
+                                            <li>
+                                                <a href="{{ path('product_create') }}"><strong
+                                                            style="color: blue">Product</strong></a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ path('category_create') }}"><strong
+                                                            style="color: blue">Category</strong></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                {% endif %}
+
                                 <li class="dropdown">
                                     <a href="" class=" dropdown-toggle" data-toggle="dropdown">
                                         <img src="{{ asset('user.svg') }}" style="width:18px">
-                                        <strong>{{ app.user.name }}</strong>
+                                        <strong>(${{ app.user.cash }}) {{ app.user.name }}</strong>
                                         <span class="caret"></span></a>
                                     <ul class="nav dropdown-menu">
                                         <li>
@@ -68,7 +87,7 @@
                                 <li>
                                     <a href="{{ path('show_cart') }}">
                                         <img src="{{ asset('cart.png') }}" style="width:18px">
-                                        <strong>Cart ({{ app.user.getCountCart }})</strong>
+                                        <strong>Cart ({{ app.user.cart.getProductsCount }})</strong>
                                     </a>
                                 </li>
                                 <li>
@@ -107,13 +126,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="navbar_button">
-                                <strong>Link 1</strong>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="navbar_button">
-                                <strong>Link 2</strong>
+                            <a href="{{ path('show_by_category') }}" class="navbar_button">
+                                <strong>Show by categories</strong>
                             </a>
                         </li>
                     </ul>

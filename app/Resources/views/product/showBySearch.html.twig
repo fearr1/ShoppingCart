@@ -1,42 +1,88 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">{{ count }} product(s) matched: {{ search }} </h1>
-    <div class="container body-content">
-        <div class="row">
-            {% for product in products %}
-                {% if product.isValid %}
-                    <div class="col-xs-3 well article">
-                        <div>
-                            <p>Name: {{ product.getName }}</p>
-                        </div>
-                        <div>
-                            <p>Price: {{ product.getPrice }}$</p>
-                        </div>
-                        <div>
-                            <p>Description: {{ product.getDescription }}</p>
-                        </div>
-                        <div>
-                            <small>Quantity: {{ product.getQuantity }}</small>
-                        </div>
-                        {% if product.picture is not empty %}
-                            <div>
-                                <img src="{{ asset('uploads/product_pictures/' ~ product.picture) }}" style="max-width: 100px"/>
+    {% if count > 0 %}
+        <h1 class="text-center">{{ count }} product(s) matched: {{ search }}</h1>
+        <div class="container">
+            <div class="well well-sm">
+                <strong>View</strong>
+                <div class="btn-group">
+                    <a href="#" id="grid" class="btn btn-default btn-sm"><span
+                                class="glyphicon glyphicon-th"></span>Grid</a>
+                </div>
+            </div>
+            <div id="products" class="row list-group">
+                {% for product in products %}
+                    {% if product.isValid %}
+                        <div class="item  col-xs-4 col-lg-4" style="height: 450px">
+                            <div class="thumbnail">
+                                <img class="group list-group-image"
+                                     src="{{ asset('uploads/product_pictures/' ~ product.picture) }}" alt=""
+                                     style="height: 200px"/>
+                                <div class="caption">
+                                    <h4 class="group inner list-group-item-heading">
+                                        {{ product.name }}</h4>
+                                    <p class="group inner list-group-item-text"
+                                       style="word-wrap: break-word">{{ product.description }}</p>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-6">
+                                            <p class="lead">
+                                                $ {{ product.price }}</p>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6">
+                                            <p>
+                                                quantity: {{ product.quantity }}</p>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6">
+                                            <p>
+                                                category: {{ product.category }}</p>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6">
+                                            <p>
+                                                seller: {{ product.author }}</p>
+                                        </div>
+                                        {% if app.user %}
+                                            {% if product.author != app.user %}
+                                                {% if not app.user.cart.isInTheCart(product) %}
+                                                    <div class="col-xs-12 col-md-6">
+                                                        <a class="btn btn-success"
+                                                           href="{{ path('add_to_cart', {id: product.id}) }}">Add to
+                                                            cart</a>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-xs-12 col-md-6">
+                                                        <a class="btn btn-warning"
+                                                           href="{{ path('remove_from_cart', {id: product.id}) }}">Remove
+                                                            from cart</a>
+                                                    </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="col-xs-12 col-md-6">
+                                                    <a class="btn btn-danger"
+                                                       href="{{ path('stop_from_sell', {id: product.id}) }}">Stop from
+                                                        sell</a>
+                                                </div>
+                                            {% endif %}
+                                            {% if app.user.isEditor %}
+                                                <div class="col-xs-12 col-md-6">
+                                                    <a class="btn btn-primary"
+                                                       href="{{ path('product_edit', {id: product.id}) }}">Edit!</a>
+                                                    <a class="btn btn-danger"
+                                                       href="{{ path('product_delete', {id: product.id}) }}">Delete!</a>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                        {% endif %}
-                        <div>
-                            <small>Author: {{ product.getAuthor }}</small>
-                            {% if product.author != app.user %}
-                                <a class="btn btn-sm btn-success col-sm-offset-4"
-                                   href="{{ path('add_to_cart', {id: product.id}) }}">Add to cart</a>
-                            {% else %}
-                                <a class="btn btn-sm btn-danger col-sm-offset-4" href="{{ path('stop_from_sell', {id: product.id}) }}">Stop selling</a>
-                            {% endif %}
                         </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% else %}
+        <h1 class="text-center">{{ count }} product(s) matched: {{ search }}</h1>
+    {% endif %}
+
 {% endblock %}
 

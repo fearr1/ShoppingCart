@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,6 +27,10 @@ class Product
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\Length(max="30",
+     *     min="5",
+     *     minMessage="Name must be at least 5 chars",
+     *     maxMessage="The limit of chars for name is 30")
      */
     private $name;
 
@@ -33,6 +38,8 @@ class Product
      * @var int
      *
      * @ORM\Column(name="price", type="integer")
+     * @Assert\Range(min="1",
+     *     minMessage="Minimum price for product is $1")
      */
     private $price;
 
@@ -40,6 +47,10 @@ class Product
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\Length(min="15",
+     *     minMessage="Minimum length for description is 15 chars",
+     *     max="100",
+     *     maxMessage="Maximum length for description is 100 chars")
      */
     private $description;
 
@@ -47,6 +58,10 @@ class Product
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer")
+     * @Assert\Range(min= 1,
+     *     minMessage="Minimum count for quantity is 1",
+     *     max = 100,
+     *     maxMessage="Maximum count for quantity is 100")
      */
     private $quantity;
 
@@ -74,7 +89,6 @@ class Product
 
     /**
      * @ORM\Column(name="picture", type="string")
-     * @Assert\NotBlank(message="Please, upload the product picture as a JPEG file.")
      * @Assert\Image()
      */
     private $picture;
@@ -83,16 +97,21 @@ class Product
      * @var Category
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="products")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=true)
      */
     private $category;
 
     /**
      * @var int
      *
-     * @@ORM\Column(name="category_id", type="integer")
+     * @@ORM\Column(name="category_id", type="integer", nullable=true)
      */
     private $categoryId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Quantity", mappedBy="product", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     */
+    private $quantities;
 
     /**
      * @param Category $category
@@ -106,10 +125,13 @@ class Product
     }
 
     /**
-     * @return Category
+     * @return Category|string
      */
     public function getCategory()
     {
+        if ($this->category == null) {
+            return "other";
+        }
         return $this->category;
     }
 
@@ -299,6 +321,77 @@ class Product
     public function __construct()
     {
         $this->setIsValid(true);
+        $this->quantities = new ArrayCollection();
     }
+
+    public function getQuantities()
+    {
+        return $this->quantities->toArray();
+    }
+
+    public function addQuantity(Quantity $quantity)
+    {
+        if (!$this->quantities->contains($quantity)) {
+            $this->quantities->add($quantity);
+            $quantity->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuantity(Quantity $quantity)
+    {
+        if ($this->quantities->contains($quantity)) {
+            $this->quantities->removeElement($quantity);
+            $quantity->setProduct(null);
+        }
+
+        return $this;
+    }
+
+    public function getRequestedQuantity()
+    {
+        return $this->getQuantities()[0]->getQuantity();
+    }
+
+    public function reduceQuantity($quantity)
+    {
+        $this->quantity -= $quantity;
+    }
+
+    public function addQuantityToProduct($quantity)
+    {
+        $this->quantity += $quantity;
+    }
+
+
+    public function buy(User $user)
+    {
+        $user->reduceCash($this->getPrice());
+        $authorProduct = $this->getAuthor();
+        $authorProduct->addCash($this->getPrice());
+        $product = null;
+
+        $this->reduceQuantity($this->getRequestedQuantity());
+        if ($user->isInTheProducts($this)) {
+            $product = $user->isInTheProducts($this);
+            $product->addQuantityToProduct($this->getRequestedQuantity());
+        } else {
+            $product = new Product();
+            $product->setName($this->getName());
+            $product->setAuthor($user);
+            $product->setCategory($this->getCategory());
+            $product->setPrice($this->getPrice());
+            $product->setDescription($this->getDescription());
+            $product->setQuantity($this->getRequestedQuantity());
+            $product->setIsValid(false);
+            $product->setPicture($this->getPicture());
+            $user->addCreatedProduct($product);
+        }
+        if ($this->getQuantity() <= 0) {
+            $this->setIsValid(false);
+        }
+    }
+
 }
 

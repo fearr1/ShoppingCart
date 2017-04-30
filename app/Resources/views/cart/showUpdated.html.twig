@@ -1,29 +1,30 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" xmlns="http://www.w3.org/1999/html">
         <div class="row">
-            <div class="col-xs-12">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <div class="panel-title">
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <h5><span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</h5>
-                                </div>
-                                <div class="col-xs-2 col-xs-offset-4">
-                                    <a class="btn btn-primary btn-sm btn-block" href="{{ previousUrl }}">
-                                        <span class="glyphicon glyphicon-share-alt"></span> Continue shopping
-                                    </a>
+            <form method="GET" action="{{ path('cart_checkout') }}">
+                <div class="col-xs-12">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <h5><span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</h5>
+                                    </div>
+                                    <div class="col-xs-2 col-xs-offset-4">
+                                        <a class="btn btn-primary btn-sm btn-block"
+                                           href="{{ path('show_all_products') }}">
+                                            <span class="glyphicon glyphicon-share-alt"></span> Continue shopping
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-body">
-                        <form method="GET" action="{{ path('show_cart') }}">
+                        <div class="panel-body">
+
                             {% if cart is not empty %}
                                 {% for product in cart %}
-                                    {% if product.isValid %}
                                     <div class="row">
                                         <div class="col-xs-2"><img class="img-responsive"
                                                                    src="{{ asset('uploads/product_pictures/' ~ product.picture) }}">
@@ -41,10 +42,8 @@
                                                 </h6>
                                             </div>
                                             <div class="col-xs-4">
-                                                <input type="number" class="form-control input-sm"
-                                                       name="{{ product.id }}"
-                                                       value="1" max="{{ product.quantity }}">
-                                                <p>Available quantity: <strong>{{ product.quantity }}</strong></p>
+                                                <input type="text" class="form-control input-sm" name="{{ product.id }}"
+                                                       value="{{ product.getRequestedQuantity }}" disabled="disabled">
                                             </div>
                                             <div class="col-xs-2">
                                                 <a class="btn btn-link btn-xs"
@@ -52,34 +51,39 @@
                                                     <span class="glyphicon glyphicon-trash"> </span>
                                                 </a>
                                             </div>
+
                                         </div>
+                                        <p>Available quantity: <strong>{{ product.quantity }}</strong></p>
                                     </div>
                                     <hr>
-                                        {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <h2 class="text-center">Your cart is empty :)</h2>
                             {% endif %}
-                            {% if cart is not empty %}
-                                <div class="row">
-                                    <div class="text-center">
-                                        <div class="col-xs-9">
-                                            <h6 class="text-right"><strong>Added items?</strong></h6>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <button type="submit" class="btn btn-primary btn-sm btn-block">
-                                                Update cart
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </form>
-
+                        </div>
+            </form>
+            <div class="panel-footer">
+                <div class="row text-center">
+                    <div class="col-xs-9">
+                        <h4 class="text-right">Total <strong>$ {{ total }}</strong></h4>
                     </div>
-
+                    <div class="col-xs-2">
+                        {% if total < app.user.cash %}
+                            <button type="submit" class="btn btn-success btn-block">
+                                Checkout
+                            </button>
+                        {% else %}
+                            <a href="{{ previousUrl }}" class="btn btn-info btn-block">
+                                Back
+                            </a>
+                            <p class="alert-danger">Not enough money</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+            </form>
         </div>
+    </div>
+    </div>
     </div>
 {% endblock %}

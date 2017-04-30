@@ -9,51 +9,59 @@
                     <legend><strong>Register</strong></legend>
 
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_username">Username</label>
+                        <label class="col-sm-4 control-label" for="user_username">Username *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_username" placeholder="Username" name="user[username]" required type="text">
+                            <input class="form-control" id="user_username" placeholder="Username" name="user[username]"
+                                   required type="text">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_email">Email</label>
+                        <label class="col-sm-4 control-label" for="user_email">Email *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_email" placeholder="Email" name="user[email]" required type="email">
+                            <input class="form-control" id="user_email" placeholder="Email" name="user[email]" required
+                                   type="email">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_password_first">Password</label>
+                        <label class="col-sm-4 control-label" for="user_password_first">Password *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_password_first" placeholder="Password" name="user[password][first]" required type="password">
+                            <input class="form-control" id="user_password_first" placeholder="Password"
+                                   name="user[password][first]" required type="password">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_password_second">Repeat your password</label>
+                        <label class="col-sm-4 control-label" for="user_password_second">Repeat your password *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_password_second" placeholder="Password" name="user[password][second]" required type="password">
+                            <input class="form-control" id="user_password_second" placeholder="Password"
+                                   name="user[password][second]" required type="password">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_name">First name</label>
+                        <label class="col-sm-4 control-label" for="user_name">First name *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_email" placeholder="First name" name="user[name]" required type="text">
+                            <input class="form-control" id="user_email" placeholder="First name" name="user[name]"
+                                   required type="text">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_last_name">Last name</label>
+                        <label class="col-sm-4 control-label" for="user_last_name">Last name *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_last_name" placeholder="Last name" name="user[last_name]" required type="text">
+                            <input class="form-control" id="user_last_name" placeholder="Last name"
+                                   name="user[last_name]" required type="text">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_age">Age</label>
+                        <label class="col-sm-4 control-label" for="user_age">Age *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_age" placeholder="Age" name="user[age]" required type="number">
+                            <input class="form-control" id="user_age" placeholder="Age" name="user[age]" required
+                                   type="number">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="user_address">Address</label>
+                        <label class="col-sm-4 control-label" for="user_address">Address *</label>
                         <div class="col-sm-4 ">
-                            <input class="form-control" id="user_address" placeholder="Address" name="user[address]" required type="text">
+                            <input class="form-control" id="user_address" placeholder="Address" name="user[address]"
+                                   required type="text">
                         </div>
                     </div>
 
@@ -64,7 +72,7 @@
                             <button type="submit" class="btn btn-primary">Register!</button>
                         </div>
                     </div>
-                    {{form_row(form._token)}}
+                    {{ form_row(form._token) }}
                 </fieldset>
             </form>
         </div>

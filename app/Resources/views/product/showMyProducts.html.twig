@@ -1,35 +1,72 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if products is not empty %}
-        <h1 class="text-center">Your products: </h1>
-        <div class="container body-content">
-            <div class="row">
-                {% for product in products %}
-                    <div class="col-xs-3 well article">
-                        <div class="container">
-                            <p>Name: {{ product.getName }}</p>
-                        </div>
-                        <div class="container">
-                            <p>Price: {{ product.getPrice }}$</p>
-                        </div>
-                        <div class="container">
-                            <p>Description: {{ product.getDescription }}</p>
-                        </div>
-                        <div class="container">
-                            <p>Quantity: {{ product.getQuantity }}</p>
-                        </div>
-                        {% if product.isValid %}
-                            <a class="btn btn-sm btn-danger col-sm-offset-4"
-                               href="{{ path('stop_from_sell', {id: product.id}) }}">Stop selling!</a>
-                        {% else %}
-                            <a class="btn btn-sm btn-primary col-sm-offset-4"
-                               href="{{ path('put_for_sale', {id: product.id, token: token}) }}">Put for sale!</a>
-
-                        {% endif %}
-                    </div>
-                {% endfor %}
+    <div class="container">
+        <div class="well well-sm">
+            <strong>View</strong>
+            <div class="btn-group">
+                <a href="#" id="grid" class="btn btn-default btn-sm"><span
+                            class="glyphicon glyphicon-th"></span>Grid</a>
             </div>
         </div>
-    {% endif %}
+        <div id="products" class="row list-group">
+            {% for product in products %}
+
+                <div class="item  col-xs-4 col-lg-4" style="height: 450px">
+                    <div class="thumbnail">
+                        <img class="group list-group-image"
+                             src="{{ asset('uploads/product_pictures/' ~ product.picture) }}" alt=""
+                             style="height: 200px"/>
+                        <div class="caption">
+                            <h4 class="group inner list-group-item-heading">
+                                {{ product.name }}</h4>
+                            <p class="group inner list-group-item-text"
+                               style="word-wrap: break-word">{{ product.description }}</p>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-6">
+                                    <p class="lead">
+                                        $ {{ product.price }}</p>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <p>
+                                        quantity: {{ product.quantity }}</p>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <p>
+                                        category: {{ product.category }}</p>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <p>
+                                        seller: {{ product.author }}</p>
+                                </div>
+                                {% if not product.isValid %}
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-primary"
+                                           href="{{ path('put_for_sale', {id: product.id, token: token}) }}">Put for
+                                            sale</a>
+                                    </div>
+                                {% else %}
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-danger"
+                                           href="{{ path('stop_from_sell', {id: product.id}) }}">Stop from
+                                            sell</a>
+                                    </div>
+                                {% endif %}
+                                {% if app.user.isEditor %}
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-primary"
+                                           href="{{ path('product_edit', {id: product.id}) }}">Edit!</a>
+                                        <a class="btn btn-danger"
+                                           href="{{ path('product_delete', {id: product.id}) }}">Delete!</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
+

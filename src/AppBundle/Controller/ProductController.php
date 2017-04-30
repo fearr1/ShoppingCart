@@ -22,7 +22,7 @@ class ProductController extends Controller
      * @param Request $request
      *
      * @Route("/product/add", name="product_create")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Security("has_role('ROLE_EDITOR')")
      *
      * @return Response
      */
@@ -56,12 +56,13 @@ class ProductController extends Controller
             $em->persist($product);
             $em->flush();
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('show_all_products');
         }
-
+        $previousUrl = $request->headers->get('referer');
         return $this->render('product/create.html.twig', [
             'form' => $form->createView(),
             'categories' => $categories,
+            'previousUrl' => $previousUrl,
         ]);
     }
 
@@ -89,7 +90,33 @@ class ProductController extends Controller
         $em = $this->getDoctrine()->getManager();
         $products = $em->getRepository(Product::class)->findAll();
         return $this->render("product/showAll.html.twig", [
-            'products' => $products
+            'products' => $products,
+        ]);
+    }
+
+    /**
+     * @Route("/categories", name="show_by_category")
+     * @param Request $request
+     * @return Response
+     */
+    public function showByCategory(Request $request)
+    {
+        $category = $request->query->get("category");
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository(Category::class)->findAll();
+        if ($category != null) {
+            $products = $em->getRepository(Product::class)->findBy(["category" => $category]);
+            $count = count($products);
+            $categoryName = $em->getRepository(Category::class)->find($category);
+            return $this->render("product/showAll.html.twig", [
+                "products" => $products,
+                "count" => $count,
+                "category" => $categoryName
+            ]);
+        }
+
+        return $this->render("product/showByCategory.html.twig", [
+            "categories" => $categories
         ]);
     }
 
@@ -106,6 +133,9 @@ class ProductController extends Controller
         }
         $em = $this->getDoctrine()->getManager();
         $product = $em->getRepository(Product::class)->find($id);
+        if (!$this->getUser()->isAuthor($product)) {
+            return $this->redirectToRoute("show_all_products");
+        }
         $product->setIsValid(true);
         $em->persist($product);
         $em->flush();
@@ -121,6 +151,9 @@ class ProductController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $product = $em->getRepository(Product::class)->find($id);
+        if (!$this->getUser()->isAuthor($product)) {
+            return $this->redirectToRoute("show_all_products");
+        }
         $product->setIsValid(false);
         $em->persist($product);
         $em->flush();

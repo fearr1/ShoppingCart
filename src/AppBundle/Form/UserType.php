@@ -26,7 +26,7 @@ class UserType extends AbstractType
             ->add('name', TextType::class)
             ->add('last_name', TextType::class)
             ->add('age', IntegerType::class)
-            ->add('address',TextType::class);
+            ->add('address', TextType::class);
 
     }
 
